@@ -120,3 +120,19 @@ tsuru-prod の Supabase を見た結果（2026-10-06 時点）:
 | 有効期間後に開かない | |
 | disposable が 2 回目で開かない | |
 | Webhook の result と到着までの秒数 | |
+
+## 6. 実験結果（2026-10-06 12:40 JST ごろ、ゆうじのMacから）
+
+| 項目 | 値 |
+|---|---|
+| ロック | `B0E9FE90C96E` CLOVER.玄関（上） / Smart Lock Ultra / ハブ 玄関ハブミニ `EE433668E974` |
+| キーパッド | `EB4833E1F997` 指紋認証パッド 97 / **Keypad Touch** / ハブ ルーム1 `F3BA87807709` / lockDeviceId = 上のロック |
+| 既存キー | 会員の permanent コード 17 件（id 11〜31） |
+| createKey 応答 | `{"statusCode":100,"body":{},"message":"success"}` — **commandId が返らなかった**（公式ドキュメントの例と違う） |
+| 反映 | 直後の devices 取得で `id=14 timeLimit normal TSURU-test-1` が既に出ていた（体感 10 秒以内） |
+| 実機解錠 | 未確認（店舗不在のため）。次回店舗で同じ手順を再実行して確認 |
+
+**TSURU. 実装への示唆**
+- `access_passcodes.command_id` は null になり得る。Webhook の結果と突き合わせるキーは **key_name（一意な名前）** にすべき。
+- 反映は速い。発行 → 数秒待って devices で keyList を確認 → 出ていれば LINE 送信、で十分。Webhook は保険。
+- 同じ SwitchBot アカウントに別拠点（玄関ロック＋顔認証パッド、クラウド OFF）もあるため、deviceId は必ず固定で持つ（自動検出しない）。
