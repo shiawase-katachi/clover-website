@@ -131,6 +131,7 @@ tsuru-prod の Supabase を見た結果（2026-10-06 時点）:
 | createKey 応答 | `{"statusCode":100,"body":{},"message":"success"}` — **commandId が返らなかった**（公式ドキュメントの例と違う） |
 | 反映 | 直後の devices 取得で `id=14 timeLimit normal TSURU-test-1` が既に出ていた（体感 10 秒以内） |
 | 実機解錠 | 未確認（店舗不在のため）。次回店舗で同じ手順を再実行して確認 |
+| deleteKey | `{"id":14}` で `statusCode:100`、直後の devices で TSURU-test-1 が消えていた（こちらも数秒で反映、commandId なし） |
 
 **TSURU. 実装への示唆**
 - `access_passcodes.command_id` は null になり得る。Webhook の結果と突き合わせるキーは **key_name（一意な名前）** にすべき。
